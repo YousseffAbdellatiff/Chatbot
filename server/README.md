@@ -27,14 +27,14 @@ pnpm dev
 You should see something like:
 
 ```
-Server is running at http://localhost:3000
+Server is running at http://localhost:8000
 ```
 
 ### 3. Test it
 
 Open your browser or use `curl`:
 
-- [http://localhost:3000/api/v1/hello](http://localhost:3000/api/v1/hello)
+- [http://localhost:8000/api/v1/hello](http://localhost:8000/api/v1/hello)
 
 You should get a JSON response like:
 
