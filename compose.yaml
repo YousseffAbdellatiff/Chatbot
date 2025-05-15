@@ -1,0 +1,7 @@
+services:
+  server:
+    build:
+      dockerfile: Dockerfile
+      context: server
+    ports:
+      - 3000:3000
