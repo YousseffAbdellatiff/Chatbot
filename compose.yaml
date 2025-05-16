@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       context: server
     environment:
-      - ALLOWED_ORIGINS=http://frontend:3000
+      - ALLOWED_ORIGIN=http://frontend:3000
     ports:
       - 8000:8000
 
@@ -14,7 +14,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: frontend
-    environment:
-      - NEXT_PUBLIC_API_URL=http://server:8000      
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
     ports:
       - 3000:3000

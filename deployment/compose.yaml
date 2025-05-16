@@ -2,13 +2,11 @@ services:
   server:
     image: ${CR_URI}/server:latest
     environment:
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGINS}
     ports:
       - 8000:8000
 
   frontend:
     image: ${CR_URI}/frontend:latest
-    environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     ports:
       - 3000:3000

@@ -1,6 +1,10 @@
-export default async function fetchHello(): Promise<string> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/hello`);
+import { API_BASE_URL } from "../config";
 
+export default async function fetchHello(): Promise<string> {
+  const res = await fetch(`${API_BASE_URL}/api/v1/hello`);
+  console.log(
+    `fetchHello: ${API_BASE_URL}/api/v1/hello - ${res.status} - ${res.statusText}`
+  );
   if (!res.ok) {
     throw new Error(`API Error: ${res.status}`);
   }
