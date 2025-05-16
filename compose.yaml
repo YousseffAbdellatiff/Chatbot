@@ -1,5 +1,6 @@
 services:
   server:
+    image: ${CR_URI}/server:latest
     build:
       dockerfile: Dockerfile
       context: server
@@ -9,6 +10,7 @@ services:
       - 8000:8000
 
   frontend:
+    image: ${CR_URI}/frontend:latest
     build:
       dockerfile: Dockerfile
       context: frontend
