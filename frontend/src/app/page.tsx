@@ -1,3 +1,4 @@
+import AuthDemo from "@/components/auth-demo";
 import BackendDemo from "@/components/backend-demo";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,8 @@ export default function Home() {
         </div>
         <p>We also got a backend</p>
         <BackendDemo />
+        <p>We also got auth</p>
+        <AuthDemo />
       </main>
     </div>
   );
