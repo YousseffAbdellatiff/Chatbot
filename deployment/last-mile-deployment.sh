@@ -2,7 +2,9 @@
 set -e
 
 # Load environment variables from .env
-export $(grep -v '^#' .env | xargs)
+set -o allexport
+source .env
+set +o allexport
 
 echo "[+] Logging into GitLab Container Registry..."
 echo "$GITLAB_TOKEN" | docker login "$REGISTRY" -u "$GITLAB_USERNAME" --password-stdin
