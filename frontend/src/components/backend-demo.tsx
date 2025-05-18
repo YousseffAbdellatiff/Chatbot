@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
 import fetchHello from "@/lib/api/hello";
+import { API_BASE_URL } from "@/lib/config";
 
 const BackendDemo = () => {
   const [text, setText] = useState<string>("");
@@ -19,7 +20,7 @@ const BackendDemo = () => {
 
   return (
     <div className="flex flex-col gap-4 items-center">
-      <p>GET {process.env.NEXT_PUBLIC_API_URL}/api/v1/hello</p>
+      <p>GET {API_BASE_URL}/api/v1/hello</p>
       <Button variant="secondary" onClick={handleClick}>
         Request text from apiº
       </Button>

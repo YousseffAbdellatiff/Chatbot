@@ -1,0 +1,7 @@
+stages:
+  - test
+
+dummy_success_job:
+  stage: test
+  script:
+    - echo "This is a dummy job that always succeeds!"
