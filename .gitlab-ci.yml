@@ -1,7 +1,44 @@
 stages:
-  - test
+  - build
+  - deploy
 
-dummy_success_job:
-  stage: test
+services:
+  - docker:dind
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - apk add --no-cache openssh bash
+
+build_and_push:
+  stage: build
   script:
-    - echo "This is a dummy job that always succeeds!"
+    # - echo "[+] Logging in to GitLab Registry (auto-authenticated by CI)"
+    # Optional, usually not needed:
+    # - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+
+    - echo "[+] Building and pushing Docker images"
+    - docker compose build
+    - docker compose push
+  only:
+    - main  # or your deploy branch
+
+deploy:
+  stage: deploy
+  only:
+    - main
+  before_script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/id_rsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+  script:
+    - echo "[+] SSH and run last-mile deployment"
+    - ssh -i ~/.ssh/id_rsa "$SERVER_USER@$SERVER_IP" << EOF
+        cd deployment
+        ./last-mile-deployment.sh
+      EOF
