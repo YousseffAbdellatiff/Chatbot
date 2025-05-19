@@ -1,0 +1,23 @@
+services:
+  server:
+    image: ${CR_URI}/server:latest
+    build:
+      dockerfile: Dockerfile
+      context: server
+    environment:
+      - ALLOWED_ORIGIN=http://frontend:3000
+    ports:
+      - 8000:8000
+
+  frontend:
+    image: ${CR_URI}/frontend:latest
+    build:
+      dockerfile: Dockerfile
+      context: frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
