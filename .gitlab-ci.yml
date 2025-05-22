@@ -1,50 +1,51 @@
 stages:
   - test
-  - build
+  - package
   - deploy
 
-services:
-  - docker:dind
 
-variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-
-before_script:
-  - apk add --no-cache openssh bash
-
+# To make gitlab shut the fuck up about never completing pipelines
 dummy_success_job:
   stage: test
   script:
-    - echo "This is a dummy job that always succeeds!"
+    - echo "Dummy always passes"
 
-build_and_push:
-  stage: build
+
+containerize:
+  stage: package
+  image: docker:24.0.5-dind
+  before_script:
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
   script:
-    # - echo "[+] Logging in to GitLab Registry (auto-authenticated by CI)"
-    # Optional, usually not needed:
-    # - echo "$CI_JOB_TOKEN" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
-
-    - echo "[+] Building and pushing Docker images"
     - docker compose build
     - docker compose push
-  only:
-    - main # or your deploy branch
+  after_script:
+    - docker rmi ${CI_REGISTRY_IMAGE}/server:latest
+    - docker rmi ${CI_REGISTRY_IMAGE}/frontend:latest
+
 
 deploy:
   stage: deploy
+  image: alpine:latest
   only:
     - main
   before_script:
+    - apk add --no-cache openssh bash
     - mkdir -p ~/.ssh
     - echo "$SSH_KEY_B64" | base64 -d > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh/id_rsa
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
+    - |
+      cat > ~/.ssh/config <<'EOF'
+      Host *
+        StrictHostKeyChecking no
+      EOF
   script:
     - echo "[+] SSH and run last-mile deployment"
-    - ssh -i ~/.ssh/id_rsa "$SERVER_USER@$SERVER_IP" << EOF
+    - |
+      ssh "$SERVER_USER@$SERVER_IP" <<'EOF'
       cd deployment
       ./last-mile-deployment.sh
       EOF
+
