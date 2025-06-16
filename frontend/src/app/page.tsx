@@ -2,6 +2,7 @@ import AuthDemo from "@/components/auth-demo";
 import BackendDemo from "@/components/backend-demo";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,6 +22,9 @@ export default function Home() {
         <BackendDemo />
         <p>We also got auth</p>
         <AuthDemo />
+        <Link href="/chat">
+  <Button variant="default">💬 Go to Chatbot</Button>
+</Link>
       </main>
     </div>
   );
